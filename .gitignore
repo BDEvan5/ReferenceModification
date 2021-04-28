@@ -10,3 +10,5 @@ ReferenceModification/PlannerUtils/__pycache__/
 *.pyc
 
 ReferenceModification/Simulator/__pycache__/
+
+Vehicles/

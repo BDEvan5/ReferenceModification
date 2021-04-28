@@ -286,7 +286,7 @@ def calculate_progress(point, wpts, diffs, l2s, ss):
     s = ss[min_dist_segment] + dist_from_cur_pt
     # print(F"{min_dist_segment} --> SS: {ss[min_dist_segment]}, curr_pt: {dist_from_cur_pt}")
 
-    s = s / ss[-1]
+    s = s / ss[-1] # scales progress to range [0, 1]
 
     return s 
 

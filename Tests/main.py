@@ -16,7 +16,7 @@ from ReferenceModification.Simulator.TrackSimulator import TrackSim
 
 
 map_name_forest = "forest2"
-train_test_n = 2
+train_test_n = 1
 nav_name_forest = f"Navforest_{train_test_n}"
 mod_name_forest = f"ModForest_{train_test_n}"
 
@@ -41,12 +41,13 @@ def train_nav_forest():
     # train_vehicle(env, vehicle, 100)
     train_vehicle(env, vehicle, 300000)
 
+
 def train_mod_forest():
     env = ForestSim(map_name_forest)
 
     vehicle = ModVehicleTrain(mod_name_forest, map_name_forest, env.sim_conf, load=False, h_size=200)
     # train_vehicle(env, vehicle, 100)
-    train_vehicle(env, vehicle, 300000)
+    train_vehicle(env, vehicle, 200000)
 
 def train_repeatability():
     env = ForestSim(map_name_forest)
@@ -98,8 +99,8 @@ def run_fgm_forest():
     env = ForestSim(map_name_forest, sim_conf)
     vehicle = ForestFGM()
 
-    # test_single_vehicle(env, vehicle, True, 10, False, vis=True)
-    test_single_vehicle(env, vehicle, True, 100, add_obs=True, vis=False)
+    # test_single_vehicle(env, vehicle, True, 10, False)
+    test_single_vehicle(env, vehicle, True, 100, add_obs=True)
 
 
 def run_oracle_forest_test():
@@ -156,7 +157,7 @@ def big_test_track():
 
 if __name__ == "__main__":
     
-    # train_mod_forest()
+    train_mod_forest()
     # train_nav_forest()
 
     
@@ -170,7 +171,7 @@ if __name__ == "__main__":
     # train_repeatability()
 
     # run_oracle_forest_test()
-    run_fgm_forest()
+    # run_fgm_forest()
 
 
 
