@@ -1,5 +1,6 @@
 import numpy as np
 from numba import njit
+from matplotlib import pyplot as plt
 
 import ReferenceModification.LibFunctions as lib
 
@@ -136,7 +137,7 @@ class BaseSim:
         self.colission = False
         self.reward = 0
         self.action = np.zeros((2))
-        self.action_memory = [] # hmmmm, remove but need to store for plotting
+        self.position_history = []
         self.steps = 0
 
         self.done_reason = ""
@@ -149,7 +150,7 @@ class BaseSim:
             action: [steering, speed]
             done_fcn: a no arg function which checks if the simulation is complete
         """
-
+        action = np.array(action)
         for _ in range(self.plan_steps):
             u = control_system(self.state, action, self.max_v, self.max_steer, 8, 3.2)
             self.state = update_kinematic_state(self.state, u, self.timestep, self.wheelbase, self.max_steer, self.max_v)
@@ -157,6 +158,9 @@ class BaseSim:
 
             if self.done_fcn():
                 break
+
+        self.position_history.append(self.state[0:2])
+        self.action = action
 
         obs = self.get_observation()
         done = self.done
@@ -176,12 +180,12 @@ class BaseSim:
         """
         self.done = False
         self.done_reason = "Null"
-        self.action_memory = []
+        self.position_history.clear()
         self.steps = 0
         self.reward = 0
 
         self.state[0:3] = self.env_map.start_pose
-        self.state[3:4] = np.zeros(2)
+        self.state[3:5] = np.zeros(2)
 
         if add_obs:
             self.env_map.add_obstacles()
@@ -204,11 +208,11 @@ class BaseSim:
         fig = plt.figure(4)
         plt.title(name)
 
-        xs, ys = self.env_map.convert_positions(self.history.positions)
+        xs, ys = self.env_map.convert_positions(self.position_history)
         plt.plot(xs, ys, 'r', linewidth=3)
         plt.plot(xs, ys, '+', markersize=12)
 
-        x, y = self.env_map.xy_to_row_column([self.car.x, self.car.y])
+        x, y = self.env_map.xy_to_row_column(self.state[0:2])
         plt.plot(x, y, 'x', markersize=20)
 
         text_x = self.env_map.map_width + 1
@@ -220,13 +224,13 @@ class BaseSim:
         plt.text(text_x, text_y * 2, s) 
         s = f"Done: {self.done}"
         plt.text(text_x, text_y * 3, s) 
-        s = f"Pos: [{self.car.x:.2f}, {self.car.y:.2f}]"
+        s = f"Pos: [{self.state[0]:.2f}, {self.state[1]:.2f}]"
         plt.text(text_x, text_y * 4, s)
-        s = f"Vel: [{self.car.velocity:.2f}]"
+        s = f"Vel: [{self.state[3]:.2f}]"
         plt.text(text_x, text_y * 5, s)
-        s = f"Theta: [{(self.car.theta * 180 / np.pi):.2f}]"
+        s = f"Theta: [{(self.state[2] * 180 / np.pi):.2f}]"
         plt.text(text_x, text_y * 6, s) 
-        s = f"Delta x100: [{(self.car.steering*100):.2f}]"
+        s = f"Delta x100: [{(self.state[4]*100):.2f}]"
         plt.text(text_x, text_y * 7, s) 
         s = f"Done reason: {self.done_reason}"
         plt.text(text_x, text_y * 8, s) 
@@ -288,9 +292,18 @@ def calculate_progress(point, wpts, diffs, l2s, ss):
 
 @njit(cache=True)
 def update_kinematic_state(x, u, dt, whlb, max_steer, max_v):
+    """
+    Updates the kinematic state according to bicycle model
+
+    Args:
+        X: State, x, y, theta, velocity steering
+        u: control action, d_dot, a
+    Returns
+        new_state: updated state of vehicle
+    """
     dx = np.array([x[3]*np.sin(x[2]), # x
                 x[3]*np.cos(x[2]), # y
-                x[3]/whlb * np.tan(u[0]), # theta
+                x[3]/whlb * np.tan(x[4]), # theta
                 u[1], # velocity
                 u[0]]) # steering
 
@@ -299,7 +312,7 @@ def update_kinematic_state(x, u, dt, whlb, max_steer, max_v):
     # check limits
     new_state[4] = min(new_state[4], max_steer)
     new_state[4] = max(new_state[4], -max_steer)
-    new_state[5] = min(new_state[5], max_v)
+    new_state[3] = min(new_state[3], max_v)
 
     return new_state
 
@@ -323,10 +336,10 @@ def control_system(state, action, max_v, max_steer, max_a, max_d_dot):
     d_ref = min(action[0], max_steer)
 
     kp_a = 10
-    a = (v_ref-state[4])*kp_a
+    a = (v_ref-state[3])*kp_a
     
     kp_delta = 40
-    d_dot = (d_ref-state[5])*kp_delta
+    d_dot = (d_ref-state[4])*kp_delta
 
     # clip actions
     a = min(a, max_a)

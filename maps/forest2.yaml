@@ -1,0 +1,11 @@
+
+resolution: 0.05
+forest_length: 25
+forest_width: 2
+start_pose: [1, 1, 0]
+end_y: 21
+obstacle_buffer: 3
+
+n_obs: 4
+obs_size: 0.5
+

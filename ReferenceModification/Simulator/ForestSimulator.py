@@ -11,7 +11,7 @@ import os
 import ReferenceModification.LibFunctions as lib
 from ReferenceModification.Simulator.map_utils import *
 
-
+from ReferenceModification.Simulator.BaseSimulatorClasses import BaseSim
 
 
 
@@ -32,7 +32,7 @@ class ForestMap:
         self.end_y = None
         self.end_goal = None
 
-        self.origin = [0, 0, 0] # for ScanSimulator
+        self.origin = np.zeros(3) # for ScanSimulator
         
         self.dt_img = None
         self.map_img = None
@@ -62,7 +62,7 @@ class ForestMap:
             self.end_y = yaml_file['end_y']
         except Exception as e:
             print(e)
-            raise FileIO("Problem loading map yaml file")
+            raise IOError("Problem loading map yaml file")
 
         self.end_goal = np.array([self.start_pose[0], self.end_y])
 
@@ -103,6 +103,18 @@ class ForestMap:
         self.dt_img = np.array(self.dt_img).T
 
         return self.dt_img
+
+    def check_plan_location(self, pt):
+        return check_scan_location(pt, self.origin, self.resolution, self.map_width, self.map_height, self.dt_img, 0.2)
+
+    def check_scan_location(self, pt):
+        return check_scan_location(pt, self.origin, self.resolution, self.map_width, self.map_height, self.dt_img, 0.1)
+
+    def convert_positions(self, pts):
+        return convert_positions(pts, self.origin, self.resolution)
+
+    def xy_to_row_column(self, pt):
+        return xy_to_row_column(pt, self.origin, self.resolution)
 
     def render_map(self, figure_n=1, wait=False):
         #TODO: draw the track boundaries nicely
@@ -202,8 +214,9 @@ class ForestSim(BaseSim):
             sim_conf: config file for simulation
         """
         if sim_conf is None:
-            path = os.path.dirname(__file__)
-            sim_conf = lib.load_conf(path, "std_config")
+            # path = os.path.dirname(__file__)
+            # sim_conf = lib.load_conf(path, "std_config")
+            sim_conf = lib.load_conf("std_config")
 
         env_map = ForestMap(map_name)
         BaseSim.__init__(self, env_map, self.check_done_forest, sim_conf
@@ -218,18 +231,18 @@ class ForestSim(BaseSim):
         """
         self.reward = 0 # normal
         # check if finished lap
-        dx = self.car.x - self.env_map.start_pose[0]
+        dx = self.state[0] - self.env_map.start_pose[0]
         dx_lim = self.env_map.forest_width * 0.5
-        if dx < dx_lim and self.car.y > self.env_map.end_y:
+        if dx < dx_lim and self.state[1] > self.env_map.end_y:
             self.done = True
             self.reward = 1
             self.done_reason = f"Lap complete"
 
         # check crash
-        elif self.env_map.check_scan_location([self.car.x, self.car.y]):
+        elif self.env_map.check_scan_location(self.state[0:2]):
             self.done = True
             self.reward = -1
-            self.done_reason = f"Crash obstacle: [{self.car.x:.2f}, {self.car.y:.2f}]"
+            self.done_reason = f"Crash obstacle: [{self.state[0]:.2f}, {self.state[1]:.2f}]"
 
         # check steps
         elif self.steps > self.max_steps:
@@ -237,7 +250,7 @@ class ForestSim(BaseSim):
             self.reward = -1
             self.done_reason = f"Max steps"
         # check orientation
-        elif abs(self.car.theta) > 0.66*np.pi:
+        elif abs(self.state[2]) > 0.66*np.pi:
             self.done = True
             self.done_reason = f"Vehicle turned around"
             self.reward = -1

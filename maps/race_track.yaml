@@ -1,0 +1,12 @@
+
+image: race_track.pgm
+origin:
+- -30.024998
+- -27.5
+- 0.0
+resolution: 0.05
+
+
+start_pose: [0, 0, 1.6]
+n_obs: 20
+obs_size: 0.5

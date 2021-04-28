@@ -1,0 +1,25 @@
+
+
+
+mu: 0.523
+m: 3.47
+g: 9.81
+l_r: 0.171
+l_f: 0.158
+force_f: 0.9
+
+max_v: 7
+max_a: 8.5
+max_steer: 0.4
+max_d_dot: 3.2
+
+n_beams: 1000
+time_step: 0.01
+plan_steps: 10
+max_steps: 5000
+
+end_distance: 2.5
+
+dis_scale: 1 # I don't know if this is the right place for this???
+
+
