@@ -227,11 +227,11 @@ class ModVehicleTrain(BaseMod):
         if self.observation is not None:
             reward = self.calculate_reward(s_prime)
 
-            mem_entry = (self.nn_state, self.nn_act, nn_s_prime, reward, False)
+            # mem_entry = (self.nn_state, self.nn_act, nn_s_prime, reward, False)
 
-            self.agent.replay_buffer.add(mem_entry)
+            # self.agent.replay_buffer.add(mem_entry)
 
-            # self.agent.replay_buffer.add(self.nn_state, self.nn_act, nn_s_prime, reward, False)
+            self.agent.replay_buffer.add(self.nn_state, self.nn_act, nn_s_prime, reward, False)
 
     def calculate_reward(self, s_prime):
         reward = s_prime['progress'] - self.observation['progress']
@@ -256,11 +256,11 @@ class ModVehicleTrain(BaseMod):
             self.print_update(True)
             self.agent.save(self.path)
         self.observation = None
-        mem_entry = (self.nn_state, self.nn_act, nn_s_prime, reward, True)
+        # mem_entry = (self.nn_state, self.nn_act, nn_s_prime, reward, True)
 
-        self.agent.replay_buffer.add(mem_entry)
+        # self.agent.replay_buffer.add(mem_entry)
 
-        # self.agent.replay_buffer.add(self.nn_state, self.nn_act, nn_s_prime, reward, True)
+        self.agent.replay_buffer.add(self.nn_state, self.nn_act, nn_s_prime, reward, True)
 
         self.reset_lap()
     

@@ -54,15 +54,14 @@ class ReplayBufferTD3(object):
 
 
 class SmartBufferTD3(object):
-    def __init__(self, max_size=1000000):     
-        self.storage = np.zeros(())
-        self.storage = []
+    def __init__(self, max_size=1000000, state_dim=14):     
         self.max_size = max_size
+        self.state_dim = state_dim
         self.ptr = 0
 
-        self.states = np.empty((max_size, 14))
+        self.states = np.empty((max_size, state_dim))
         self.actions = np.empty((max_size, 1))
-        self.next_states = np.empty((max_size, 14))
+        self.next_states = np.empty((max_size, state_dim))
         self.rewards = np.empty((max_size, 1))
         self.dones = np.empty((max_size, 1))
 
@@ -72,14 +71,16 @@ class SmartBufferTD3(object):
         self.next_states[self.ptr] = s_p
         self.rewards[self.ptr] = r
         self.dones[self.ptr] = d
+
+        self.ptr += 1
         
         if self.ptr == 99999: self.ptr = 0
 
     def sample(self, batch_size):
-        ind = np.random.randint(0, len(self.storage), size=batch_size)
-        states = np.empty((batch_size, 14))
+        ind = np.random.randint(0, self.ptr-1, size=batch_size)
+        states = np.empty((batch_size, self.state_dim))
         actions = np.empty((batch_size, 1))
-        next_states = np.empty((batch_size, 14))
+        next_states = np.empty((batch_size, self.state_dim))
         rewards = np.empty((batch_size, 1))
         dones = np.empty((batch_size, 1))
 
@@ -93,7 +94,7 @@ class SmartBufferTD3(object):
         return states, actions, next_states, rewards, dones
 
     def size(self):
-        return len(self.storage)
+        return self.ptr
 
 nn_l1 = 400
 nn_l2 = 300
@@ -164,8 +165,8 @@ class TD3(object):
         self.critic_target = None
         self.critic_optimizer = None
 
-        self.replay_buffer = ReplayBufferTD3()
-        # self.replay_buffer = SmartBufferTD3()
+        # self.replay_buffer = ReplayBufferTD3()
+        self.replay_buffer = SmartBufferTD3(state_dim = state_dim)
 
     def create_agent(self, h_size):
         state_dim = self.state_dim
