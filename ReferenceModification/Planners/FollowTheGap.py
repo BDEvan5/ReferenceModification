@@ -4,10 +4,8 @@ import csv
 from matplotlib import pyplot as plt
 from numba import njit
  
-import toy_auto_race.Utils.LibFunctions as lib
-from toy_auto_race.lidar_viz import LidarViz
-from toy_auto_race.speed_utils import calculate_speed
-
+from ReferenceModification.PlannerUtils.speed_utils import calculate_speed
+import ReferenceModification.LibFunctions as lib
 
 
 class TrackFGM:    
@@ -18,8 +16,6 @@ class TrackFGM:
     REDUCTION = 100
     
     def __init__(self):
-        # used when calculating the angles of the LiDAR data
-        self.vis = LidarViz(1000)
         self.degrees_per_elem = None
         self.name = "Follow the Race Gap"
         self.n_beams = 1000
@@ -119,7 +115,6 @@ class ForestFGM:
 
         return proc_ranges
 
-   
     def find_best_point(self, start_i, end_i, ranges):
         """Start_i & end_i are start and end indices of max-gap range, respectively
         Return index of best point in ranges
@@ -159,7 +154,7 @@ class ForestFGM:
         return steering_angle
 
     def plan_act(self, obs):
-        scan = obs[7:-1]
+        scan = obs['scan']
         ranges = np.array(scan, dtype=np.float)
 
         steering_angle = self.process_lidar(ranges)

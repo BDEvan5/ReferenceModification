@@ -93,7 +93,7 @@ def test_repeat():
     test.run_eval(env, 1000, False)
 
 
-def test_follow_the_gap_forest():
+def run_fgm_forest():
     sim_conf = lib.load_conf("fgm_config")
     env = ForestSim(map_name_forest, sim_conf)
     vehicle = ForestFGM()
@@ -169,8 +169,8 @@ if __name__ == "__main__":
     # test_repeat()
     # train_repeatability()
 
-    run_oracle_forest_test()
-
+    # run_oracle_forest_test()
+    run_fgm_forest()
 
 
 
