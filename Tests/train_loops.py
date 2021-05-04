@@ -25,7 +25,7 @@ def train_vehicle(env, vehicle, steps):
         
         if done:
             vehicle.done_entry(s_prime)
-            env.render(wait=False, name=vehicle.name)
+            # env.render(wait=False, name=vehicle.name)
 
             # vehicle.reset_lap()
             state = env.reset()

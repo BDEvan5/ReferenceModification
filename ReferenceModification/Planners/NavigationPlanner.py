@@ -19,18 +19,15 @@ class BaseNav:
         self.max_steer = sim_conf.max_steer
 
         self.distance_scale = 20 # max meters for scaling
+        self.range_finder_scale = 5
 
     def transform_obs(self, obs):
-        max_angle = 3.14
+        state = obs['state']
+        cur_v = [state[3]/self.max_v]
+        cur_d = [state[4]/self.max_steer]
+        scan = np.array(obs['scan']) / self.range_finder_scale
 
-        cur_v = [obs[3]/self.max_v]
-        cur_d = [obs[4]/self.max_steer]
-        target_angle = [obs[5]/max_angle]
-        target_distance = [obs[6]/self.distance_scale]
-
-        scan = obs[7:-1]
-
-        nn_obs = np.concatenate([cur_v, cur_d, target_angle, target_distance, scan])
+        nn_obs = np.concatenate([cur_v, cur_d, scan])
 
         return nn_obs
 
@@ -40,7 +37,7 @@ class NavTrainVehicle(BaseNav):
     def __init__(self, agent_name, sim_conf, load=False, h_size=200) -> None:
         BaseNav.__init__(self, agent_name, sim_conf)
         self.path = 'Vehicles/' + agent_name
-        state_space = 4 + self.n_beams
+        state_space = 2 + self.n_beams
         self.agent = TD3(state_space, 1, 1, agent_name)
         self.agent.try_load(load, h_size, self.path)
 
@@ -67,16 +64,18 @@ class NavTrainVehicle(BaseNav):
 
         return self.action
 
-    def calcualte_reward(self, s_prime):
-        # reward = (self.state[6] - s_prime[6]) 
-        reward = (s_prime[6] - self.state[6]) 
-        reward += s_prime[-1]
-        
+    def calculate_reward(self, s_prime):
+        reward = s_prime['progress'] - self.state['progress']
+        reward += s_prime['reward']
+        # self.current_ep_reward += reward
+
         return reward
+
+
 
     def add_memory_entry(self, s_prime, nn_s_prime):
         if self.state is not None:
-            reward = self.calcualte_reward(s_prime)
+            reward = self.calculate_reward(s_prime)
 
             self.t_his.add_step_data(reward)
             mem_entry = (self.nn_state, self.nn_action, nn_s_prime, reward, False)

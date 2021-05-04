@@ -74,7 +74,7 @@ class BaseMod(ModPP):
         self.n_beams = sim_conf.n_beams
         self.max_v = sim_conf.max_v
         self.max_steer = sim_conf.max_steer
-        self.range_finder_scale = 10 #TODO: move to config files
+        self.range_finder_scale = 5 #TODO: move to config files
 
         # self.history = ModHistory()
 
@@ -96,12 +96,12 @@ class BaseMod(ModPP):
         state = obs['state']
         cur_v = [state[3]/self.max_v]
         cur_d = [state[4]/self.max_steer]
-
+        angle = [lib.get_bearing(state[0:2], [1, 21])/self.max_steer]
         dr_scale = [pp_action[0]/self.max_steer]
 
         scan = np.array(obs['scan']) / self.range_finder_scale
 
-        nn_obs = np.concatenate([cur_v, cur_d, dr_scale, scan])
+        nn_obs = np.concatenate([cur_v, cur_d, angle, dr_scale, scan])
 
         return nn_obs
 
@@ -174,7 +174,7 @@ class ModVehicleTrain(BaseMod):
         BaseMod.__init__(self, agent_name, map_name, sim_conf)
 
         self.path = 'Vehicles/' + agent_name
-        state_space = 3 + self.n_beams
+        state_space = 4 + self.n_beams
         self.agent = TD3(state_space, 1, 1, agent_name)
         h_size = h_size
         self.agent.try_load(load, h_size, self.path)
@@ -200,9 +200,6 @@ class ModVehicleTrain(BaseMod):
                 shutil.rmtree(path)
         os.mkdir(path)
         
-    def set_reward_fcn(self, r_fcn):
-        self.reward_fcn = r_fcn
-
     def plan_act(self, obs):
         position = obs['state'][0:2]
         theta = obs['state'][2]
@@ -276,15 +273,15 @@ class ModVehicleTrain(BaseMod):
 
     def save_csv_data(self):
         data = []
-        for i in range(len(self.rewards)):
-            data.append([i, self.rewards[i], self.lengths[i]])
-        full_name = 'Vehicles/' + self.agent_name + '/training_data.csv'
+        for i in range(len(self.ep_rewards)):
+            data.append([i, self.ep_rewards[i]])
+        full_name = self.path + '/training_data.csv'
         with open(full_name, 'w') as csvfile:
             csvwriter = csv.writer(csvfile)
             csvwriter.writerows(data)
 
         plt.figure(2)
-        plt.savefig('Vehicles/' + self.agent_name + "/training_rewards.png")
+        plt.savefig(self.path + "/training_rewards.png")
 
 
 class ModVehicleTest(BaseMod):
@@ -311,7 +308,9 @@ class ModVehicleTest(BaseMod):
         # self.vis = LidarVizMod(10)
 
     def plan_act(self, obs):
-        pp_action = super().act_pp(obs)
+        position = obs['state'][0:2]
+        theta = obs['state'][2]
+        pp_action = super().act_pp(position, theta)
         nn_obs = self.transform_obs(obs, pp_action)
 
         nn_action = self.agent.act(nn_obs, noise=0)
