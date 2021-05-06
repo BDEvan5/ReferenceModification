@@ -34,7 +34,6 @@ class BaseNav:
         return nn_obs
 
     
-
 class NavTrainVehicle(BaseNav):
     def __init__(self, agent_name, sim_conf, load=False, h_size=200) -> None:
         BaseNav.__init__(self, agent_name, sim_conf)
@@ -97,8 +96,6 @@ class NavTrainVehicle(BaseNav):
         """
         To be called when ep is done.
         """
-        # position = s_prime['state'][0:2]
-        # theta = s_prime['state'][2]
         nn_s_prime = self.transform_obs(s_prime)
         reward = self.calculate_reward(s_prime)
 
