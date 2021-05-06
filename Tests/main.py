@@ -7,7 +7,7 @@ from ReferenceModification.Planners.FollowTheGap import ForestFGM
 # import utils
 from ReferenceModification import LibFunctions as lib 
 from Tests.train_loops import * 
-from Tests.tests import *
+from Tests.testing_fcns import *
 from ReferenceModification.Simulator.ForestSimulator import ForestSim
 
 # Set name variables
