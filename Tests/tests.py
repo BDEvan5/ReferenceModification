@@ -1,7 +1,5 @@
-from shutil import Error
 
 from numba.core.decorators import njit
-from toy_auto_race.ImitationLearning import BufferIL
 import numpy as np
 import csv
 from matplotlib import pyplot as plt

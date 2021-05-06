@@ -63,8 +63,6 @@ class ModPP:
 
         return [steering_angle, speed]
 
-    def reset_lap(self):
-        self.aim_pts.clear()
 
 
 class BaseMod(ModPP):
@@ -96,12 +94,13 @@ class BaseMod(ModPP):
         state = obs['state']
         cur_v = [state[3]/self.max_v]
         cur_d = [state[4]/self.max_steer]
-        angle = [lib.get_bearing(state[0:2], [1, 21])/self.max_steer]
+        vr_scale = [(pp_action[1])/self.max_v]
+        # angle = [lib.get_bearing(state[0:2], [1, 21])/self.max_steer]
         dr_scale = [pp_action[0]/self.max_steer]
 
         scan = np.array(obs['scan']) / self.range_finder_scale
 
-        nn_obs = np.concatenate([cur_v, cur_d, angle, dr_scale, scan])
+        nn_obs = np.concatenate([cur_v, cur_d, vr_scale, dr_scale, scan])
 
         return nn_obs
 
@@ -224,10 +223,6 @@ class ModVehicleTrain(BaseMod):
         if self.observation is not None:
             reward = self.calculate_reward(s_prime)
 
-            # mem_entry = (self.nn_state, self.nn_act, nn_s_prime, reward, False)
-
-            # self.agent.replay_buffer.add(mem_entry)
-
             self.agent.replay_buffer.add(self.nn_state, self.nn_act, nn_s_prime, reward, False)
 
     def calculate_reward(self, s_prime):
@@ -253,23 +248,17 @@ class ModVehicleTrain(BaseMod):
             self.print_update(True)
             self.agent.save(self.path)
         self.observation = None
-        # mem_entry = (self.nn_state, self.nn_act, nn_s_prime, reward, True)
-
-        # self.agent.replay_buffer.add(mem_entry)
 
         self.agent.replay_buffer.add(self.nn_state, self.nn_act, nn_s_prime, reward, True)
 
-        self.reset_lap()
-    
     def print_update(self, plot_reward=True):
         if self.reward_ptr < 5:
             return
-        mean = np.mean(self.ep_rewards[0:self.reward_ptr])
-        score = self.ep_rewards[self.reward_ptr-1]
-        print(f"Run: {self.step_counter} --> Score: {score:.2f} --> Mean: {mean:.2f}  ")
+        mean = np.mean(self.ep_rewards[max(0, self.reward_ptr-101):self.reward_ptr-1])
+        print(f"Run: {self.step_counter} --> 100 ep Mean: {mean:.2f}  ")
         
         if plot_reward:
-            lib.plot(self.ep_rewards[0:self.reward_ptr], figure_n=2)
+            lib.plot(self.ep_rewards[0:self.reward_ptr], 20, figure_n=2)
 
     def save_csv_data(self):
         data = []

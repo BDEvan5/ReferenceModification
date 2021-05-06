@@ -1,15 +1,4 @@
 
-from numba.core.decorators import njit
-from toy_auto_race.ImitationLearning import BufferIL
-import numpy as np
-import csv
-from matplotlib import pyplot as plt
-
-
-import ReferenceModification.LibFunctions as lib
-
-
-
 
 def train_vehicle(env, vehicle, steps):
     done = False
@@ -27,7 +16,6 @@ def train_vehicle(env, vehicle, steps):
             vehicle.done_entry(s_prime)
             # env.render(wait=False, name=vehicle.name)
 
-            # vehicle.reset_lap()
             state = env.reset()
 
     vehicle.print_update(True)

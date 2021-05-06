@@ -162,9 +162,9 @@ def plot(values, moving_avg_period=10, title="Results", figure_n=2):
     plt.ylabel('Duration')
     plt.plot(values)
 
-    moving_avg = get_moving_average(moving_avg_period, values)
+    moving_avg = moving_average(values, moving_avg_period)
     plt.plot(moving_avg)    
-    moving_avg = get_moving_average(moving_avg_period * 5, values)
+    moving_avg = moving_average(values, moving_avg_period * 5)
     plt.plot(moving_avg)    
     plt.pause(0.001)
 
@@ -173,23 +173,14 @@ def plot_no_avg(values, moving_avg_period=10, title="Results", figure_n=2):
     plt.clf()        
     plt.title(title)
     plt.xlabel('Episode')
-    plt.ylabel('Duration')
+    plt.ylabel('Reward')
     plt.plot(values)
 
     plt.pause(0.0001)
 
-def get_moving_average(period, values):
-    if len(values) < period:
-        return values
+def moving_average(data, period):
+    return np.convolve(data, np.ones(period), 'same') / period
 
-    moving_avg = np.zeros_like(values)
-
-    for i, avg in enumerate(moving_avg):
-        try:
-            moving_avg[i] = np.mean(values[max(i-period, 0):i])
-        except ValueError:
-            break
-    return moving_avg[1:]
 
 def plot_multi(value_array, title="Results", figure_n=2, ylim=[-1, 1]):
     plt.figure(figure_n)
