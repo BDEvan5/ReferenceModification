@@ -54,7 +54,6 @@ class OraclePP:
 
         speed, steering_angle = pure_pursuit_utils.get_actuation(theta, lookahead_point, pos, self.lookahead, self.wheelbase)
 
-        # speed = 4
         speed = calculate_speed(steering_angle)
 
         return [steering_angle, speed]
@@ -93,10 +92,8 @@ class Oracle(OraclePP):
         n = 5 # number of pts per orig pt
         dz = 1 / n
         o_line = self.waypoints[:, 0:2]
-        # o_ss = self.ss
         o_vs = self.waypoints[:, 2]
         new_line = []
-        # new_ss = []
         new_vs = []
         for i in range(len(self.waypoints)-1):
             dd = lib.sub_locations(o_line[i+1], o_line[i])
@@ -104,14 +101,10 @@ class Oracle(OraclePP):
                 pt = lib.add_locations(o_line[i], dd, dz*j)
                 new_line.append(pt)
 
-                # ds = o_ss[i+1] - o_ss[i]
-                # new_ss.append(o_ss[i] + dz*j*ds)
-
                 dv = o_vs[i+1] - o_vs[i]
                 new_vs.append(o_vs[i] + dv * j * dz)
 
         wpts = np.array(new_line)
-        # self.ss = np.array(new_ss)
         vs = np.array(new_vs)
         self.waypoints = np.concatenate([wpts, vs[:, None]], axis=-1)
 
@@ -139,31 +132,9 @@ class Oracle(OraclePP):
 
         self.waypoints = np.concatenate([waypoints, vs], axis=-1)
 
-        # self.plot_plan(env_map, t_pts, ws, waypoints)
-
         self.reset_lap()
 
         return waypoints
-
-    def plot_plan(self, env_map, t_pts, ws, waypoints=None):
-        env_map.render_map(4)
-
-        plt.figure(4)
-        env_map.render_wpts(t_pts)
-        env_map.render_wpts(waypoints)
-        # env_map.render_aim_pts(t_pts)
-
-        rs = t_pts[:, 0] - ws[:, 0]
-        r_pts = np.stack([rs, t_pts[:, 1]], axis=1)
-        xs, ys = env_map.convert_positions(r_pts)
-        plt.plot(xs, ys, 'b')
-
-        ls = t_pts[:, 0] + ws[:, 1]
-        l_pts = np.stack([ls, t_pts[:, 1]], axis=1)
-        xs, ys = env_map.convert_positions(l_pts)
-        plt.plot(xs, ys, 'b')
-
-        plt.show()
 
     def plan_act(self, obs):
         pos = np.array(obs['state'][0:2])

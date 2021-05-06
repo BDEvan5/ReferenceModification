@@ -131,7 +131,6 @@ class BaseSim:
         self.state = np.zeros(5)
         self.scan_sim = ScanSimulator(self.sim_conf.n_beams)
         self.scan_sim.init_sim_map(env_map)
-        # self.scan_sim.set_check_fcn(self.env_map.check_scan_location)
 
         self.done = False
         self.colission = False
