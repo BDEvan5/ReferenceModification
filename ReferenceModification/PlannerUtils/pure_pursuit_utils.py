@@ -1,8 +1,4 @@
 import numpy as np
-from numpy import genfromtxt
-import numpy.linalg as LA
-import scipy.interpolate as interpolate
-import json, time, collections
 
 from numba import njit
 

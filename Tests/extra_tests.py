@@ -8,7 +8,7 @@ from ReferenceModification.Planners.FollowTheGap import ForestFGM
 
 from ReferenceModification import LibFunctions as lib 
 from Tests.train_loops import * 
-from Tests.tests import *
+from Tests.testing_fcns import *
 
 import numpy as np
 
