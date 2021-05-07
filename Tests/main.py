@@ -37,8 +37,8 @@ def train_mod_forest():
     env = ForestSim(map_name_forest)
 
     vehicle = ModVehicleTrain(mod_name_forest, map_name_forest, env.sim_conf, load=False, h_size=200)
-    train_vehicle(env, vehicle, 1000)
-    # train_vehicle(env, vehicle, 200000)
+    # train_vehicle(env, vehicle, 1000)
+    train_vehicle(env, vehicle, 200000)
 
 
 def train_repeatability():

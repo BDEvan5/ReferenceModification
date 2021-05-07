@@ -35,7 +35,7 @@ def run_mod_forest():
     env = ForestSim(map_name_forest, sim_conf)
     vehicle = ModVehicleTest(mod_name_forest, map_name_forest, env.sim_conf)
 
-    test_single_vehicle(env, vehicle, True, 10, add_obs=True, wait=False)
+    test_single_vehicle(env, vehicle, True, 100, add_obs=True, wait=False)
 
 def run_nav_forest():
 
