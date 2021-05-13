@@ -26,8 +26,8 @@ class BaseNav:
         state = obs['state']
         cur_v = [state[3]/self.max_v]
         cur_d = [state[4]/self.max_steer]
-        target_angle = [lib.get_bearing(state[0:2], [1, 21])/self.max_steer]
-        angle = lib.sub_angles_complex(target_angle, state[2])
+        target_angle = lib.get_bearing(state[0:2], [1, 21])/self.max_steer
+        angle = [lib.sub_angles_complex(target_angle, state[2])]
         scan = np.array(obs['scan']) / self.range_finder_scale
 
         nn_obs = np.concatenate([cur_v, cur_d, angle, scan])

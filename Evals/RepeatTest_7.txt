@@ -1,0 +1,65 @@
+
+Testing Complete 
+Map name:  
+-----------------------------------------------------
+-----------------------------------------------------
+Vehicle: ModRepeat_forest_0
+Crashes: 20.0 --> Completes 80.0
+% Finished = 80.00
+Avg lap times: 672.5375
+No Obs Time: 433.0
+-----------------------------------------------------
+Vehicle: ModRepeat_forest_1
+Crashes: 23.0 --> Completes 77.0
+% Finished = 77.00
+Avg lap times: 530.5584415584416
+No Obs Time: 389.0
+-----------------------------------------------------
+Vehicle: ModRepeat_forest_2
+Crashes: 15.0 --> Completes 85.0
+% Finished = 85.00
+Avg lap times: 518.1058823529412
+No Obs Time: 422.0
+-----------------------------------------------------
+Vehicle: ModRepeat_forest_3
+Crashes: 21.0 --> Completes 79.0
+% Finished = 79.00
+Avg lap times: 500.1898734177215
+No Obs Time: 376.0
+-----------------------------------------------------
+Vehicle: ModRepeat_forest_4
+Crashes: 18.0 --> Completes 82.0
+% Finished = 82.00
+Avg lap times: 513.9268292682926
+No Obs Time: 386.0
+-----------------------------------------------------
+Vehicle: ModRepeat_forest_5
+Crashes: 16.0 --> Completes 84.0
+% Finished = 84.00
+Avg lap times: 577.6904761904761
+No Obs Time: 445.0
+-----------------------------------------------------
+Vehicle: ModRepeat_forest_6
+Crashes: 16.0 --> Completes 84.0
+% Finished = 84.00
+Avg lap times: 640.547619047619
+No Obs Time: 419.0
+-----------------------------------------------------
+Vehicle: ModRepeat_forest_7
+Crashes: 12.0 --> Completes 88.0
+% Finished = 88.00
+Avg lap times: 512.5568181818181
+No Obs Time: 379.0
+-----------------------------------------------------
+Vehicle: ModRepeat_forest_8
+Crashes: 21.0 --> Completes 79.0
+% Finished = 79.00
+Avg lap times: 531.4050632911392
+No Obs Time: 381.0
+-----------------------------------------------------
+Vehicle: ModRepeat_forest_9
+Crashes: 20.0 --> Completes 80.0
+% Finished = 80.00
+Avg lap times: 521.7125
+No Obs Time: 386.0
+-----------------------------------------------------

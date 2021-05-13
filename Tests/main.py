@@ -12,7 +12,7 @@ from ReferenceModification.Simulator.ForestSimulator import ForestSim
 
 # Set name variables
 map_name_forest = "forest2"
-train_test_n = 4
+train_test_n = 7
 nav_name_forest = f"Navforest_{train_test_n}"
 # train_test_n = 2
 mod_name_forest = f"ModForest_{train_test_n}"
@@ -49,8 +49,8 @@ def train_repeatability():
 
         vehicle = ModVehicleTrain(train_name, map_name_forest, env.sim_conf, load=False)
 
-        train_vehicle(env, vehicle, 100)
-        # train_vehicle(env, vehicle, 200000)
+        # train_vehicle(env, vehicle, 100)
+        train_vehicle(env, vehicle, 200000)
 
 # test forest
 def run_comparison_forest():
@@ -69,7 +69,7 @@ def run_comparison_forest():
     vehicle = ModVehicleTest(mod_name_forest, map_name_forest, env.sim_conf)
     test.add_vehicle(vehicle)
 
-    test.run_eval(env, 100, False, wait=False)
+    test.run_eval(env, 100, True, wait=False)
 
 def test_repeat():
     env = ForestSim(map_name_forest)
@@ -81,7 +81,7 @@ def test_repeat():
         test.add_vehicle(vehicle)
 
     # test.run_eval(env, 1000, False)
-    test.run_eval(env, 1000, False)
+    test.run_eval(env, 100, False)
 
 
 
@@ -90,11 +90,11 @@ def test_repeat():
 if __name__ == "__main__":
     
     # train_nav_forest()
-    train_mod_forest()
+    # train_mod_forest()
 
-    # run_comparison_forest()
-    
     # train_repeatability()
-    # test_repeat()
+    
+    run_comparison_forest()
 
+    # test_repeat()
 

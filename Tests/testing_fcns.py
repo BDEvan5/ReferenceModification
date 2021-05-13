@@ -27,7 +27,7 @@ def test_single_vehicle(env, vehicle, show=False, laps=100, add_obs=True, wait=F
             a = vehicle.plan_act(state)
             s_p, r, done, _ = env.step(a)
             state = s_p
-            # env.render(False)
+            env.render(False)
         if show:
             env.render(wait=wait, name=vehicle.name)
 

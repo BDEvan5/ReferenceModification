@@ -16,7 +16,7 @@ from ReferenceModification.Simulator.ForestSimulator import ForestSim
 
 
 map_name_forest = "forest2"
-train_test_n = 4
+train_test_n = 7
 nav_name_forest = f"Navforest_{train_test_n}"
 # train_test_n = 2
 mod_name_forest = f"ModForest_{train_test_n}"
@@ -49,13 +49,13 @@ def run_oracle_forest_test():
     env = ForestSim(map_name_forest)
     vehicle = Oracle(env.sim_conf)
 
-    test_single_vehicle(env, vehicle, False, 100, add_obs=True, wait=False)
+    test_single_vehicle(env, vehicle, True, 100, add_obs=True, wait=True)
 
 
 
 if __name__ == "__main__":
     
-    # run_oracle_forest_test()
+    run_oracle_forest_test()
     # run_fgm_forest()
-    run_mod_forest()
+    # run_mod_forest()
     # run_nav_forest()

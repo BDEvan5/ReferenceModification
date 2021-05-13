@@ -81,14 +81,14 @@ class BaseMod:
         state = obs['state']
         cur_v = [state[3]/self.max_v]
         cur_d = [state[4]/self.max_steer]
-        vr_scale = [(pp_action[1])/self.max_v]
-        target_angle = [lib.get_bearing(state[0:2], [1, 21])/self.max_steer]
-        angle = lib.sub_angles_complex(target_angle, state[2])
-        # dr_scale = [pp_action[0]/self.max_steer]
+        # vr_scale = [(pp_action[1])/self.max_v]
+        target_angle = lib.get_bearing(state[0:2], [1, 21])
+        angle = [lib.sub_angles_complex(target_angle, state[2])/self.max_steer]
+        dr_scale = [pp_action[0]/self.max_steer]
 
         scan = np.array(obs['scan']) / self.range_finder_scale
 
-        nn_obs = np.concatenate([cur_v, cur_d, vr_scale, angle, scan])
+        nn_obs = np.concatenate([cur_v, cur_d, dr_scale, angle, scan])
 
         return nn_obs
 
