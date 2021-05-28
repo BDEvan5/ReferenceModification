@@ -14,26 +14,24 @@ The path follower, follows a reference and the RL agent learns to modify the ref
 - We built a custom simulator to simulate f1tenth cars, avoiding static obstacles in a corridor/forrest
 - The corridor, is 20m long and have 4 obstacles which are randomly spawned for each episode
 
-## Folders
+## Storage Folders
 - maps: contains the map file for the forest
 - config: contains a configuration file for the vehicle with the parameters which are used
 - Evals: Contains results from the evaluations, after each evaluation, a .txt and .csv file is saved
-- Tests: contains training and testing scripts
+- TestingScripts: contains training and testing scripts
 - Vehicles: saves the neural network parameters for the RL agents and the training data
 
-## Code
+## Code Folders
 - **Simulator:** contains all the code for the simulator. It is built similarly to the gym env's with classic, step and reset methods.
-- **Planners:** contains all the code for the different planners that we test. The planners receive the vehicle state and a lidar scan and return an action in the form of velocity and steering commands.
-- Utils constains various utilities
+- **NavAgents:** contains all the code for the different planners that we test. The planners receive the vehicle state and a lidar scan and return an action in the form of velocity and steering commands.
+- **NavUtils** constains various utilities for the agents
+
+## Scripts
+- train.py: training loops for the navigation and modification planners
+- ResultsTests.py: compares the different planners
+- IndividualTests.py: allows for each planner to be individually tested
 
 ## Installation
-- Requirements:
-  - PyTorch
-  - Numpy
-  - Matplotlib
-  - casadi 
-  - numba
-  - scipy
 - Installation
   - clone the repo onto your computer
   - navigate into the folder, ```cd ReferenceModification```
