@@ -28,9 +28,10 @@ class BaseNav:
         cur_d = [state[4]/self.max_steer]
         target_angle = lib.get_bearing(state[0:2], [1, 21])/self.max_steer
         angle = [lib.sub_angles_complex(target_angle, state[2])]
+        target_distance = [(21 - state[1]) / 20]
         scan = np.array(obs['scan']) / self.range_finder_scale
 
-        nn_obs = np.concatenate([cur_v, cur_d, angle, scan])
+        nn_obs = np.concatenate([cur_v, cur_d, angle, target_distance, scan])
 
         return nn_obs
 
@@ -39,7 +40,7 @@ class NavTrainVehicle(BaseNav):
     def __init__(self, agent_name, sim_conf, load=False, h_size=200) -> None:
         BaseNav.__init__(self, agent_name, sim_conf)
         self.path = 'Vehicles/' + agent_name
-        observation_space = 3 + self.n_beams
+        observation_space = 4 + self.n_beams
         self.agent = TD3(observation_space, 1, 1, agent_name)
         self.agent.try_load(load, h_size, self.path)
 

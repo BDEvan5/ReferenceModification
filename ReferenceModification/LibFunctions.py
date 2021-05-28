@@ -137,15 +137,6 @@ def sub_angles_complex(a1, a2):
 
     return phase
     
-# def sub_angles_complex(a1, a2):
-#     c1 = complex(math.cos(a1), math.sin(a1))
-#     c2 = complex(math.cos(a2), math.sin(a2))
-
-#     sum_c = c1 * c2.conjugate()
-#     phase = cmath.phase(sum_c)
-
-#     return phase
-
 def limit_multi_theta(thetas):
     ths = []
     for theta in thetas:

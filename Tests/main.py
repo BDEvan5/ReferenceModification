@@ -12,7 +12,7 @@ from ReferenceModification.Simulator.ForestSimulator import ForestSim
 
 # Set name variables
 map_name_forest = "forest2"
-train_test_n = 7
+train_test_n = 0
 nav_name_forest = f"Navforest_{train_test_n}"
 # train_test_n = 2
 mod_name_forest = f"ModForest_{train_test_n}"
@@ -90,11 +90,11 @@ def test_repeat():
 if __name__ == "__main__":
     
     # train_nav_forest()
-    # train_mod_forest()
+    train_mod_forest()
 
     # train_repeatability()
     
-    run_comparison_forest()
+    # run_comparison_forest()
 
     # test_repeat()
 

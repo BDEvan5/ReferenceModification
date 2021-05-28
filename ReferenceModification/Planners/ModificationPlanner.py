@@ -88,7 +88,7 @@ class BaseMod:
 
         scan = np.array(obs['scan']) / self.range_finder_scale
 
-        nn_obs = np.concatenate([cur_v, cur_d, dr_scale, angle, scan])
+        nn_obs = np.concatenate([cur_v, cur_d, angle, dr_scale, scan])
 
         return nn_obs
 
