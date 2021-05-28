@@ -3,17 +3,17 @@ from numba import njit
 from matplotlib import pyplot as plt
 import csv
 
-from ReferenceModification.PlannerUtils.TrajectoryPlanner import MinCurvatureTrajectory
-
+from ReferenceModification.NavUtils.TrajectoryPlanner import Max_velocity, Max_velocity_conf, MinCurvatureTrajectoryForest, MinCurvatureTrajectory, ObsAvoidTraj
 import ReferenceModification.LibFunctions as lib
 
-from ReferenceModification.PlannerUtils.speed_utils import calculate_speed
-from ReferenceModification.PlannerUtils import pure_pursuit_utils
+from ReferenceModification.NavUtils.speed_utils import calculate_speed
+from ReferenceModification.NavUtils import pure_pursuit_utils
 
 
 class OraclePP:
     def __init__(self, sim_conf) -> None:
         self.name = "Oracle Path Follower"
+        self.path_name = None
 
         self.wheelbase = sim_conf.l_f + sim_conf.l_r
 
@@ -46,13 +46,18 @@ class OraclePP:
         else:
             return None
 
-    def act_pp(self, pos, theta):
+    def act_pp(self, obs):
+        pose_th = obs[2]
+        pos = np.array(obs[0:2], dtype=np.float)
+
         lookahead_point = self._get_current_waypoint(pos)
+
+        self.aim_pts.append(lookahead_point[0:2])
 
         if lookahead_point is None:
             return [0, 4.0]
 
-        speed, steering_angle = pure_pursuit_utils.get_actuation(theta, lookahead_point, pos, self.lookahead, self.wheelbase)
+        speed, steering_angle = pure_pursuit_utils.get_actuation(pose_th, lookahead_point, pos, self.lookahead, self.wheelbase)
 
         speed = calculate_speed(steering_angle)
 
@@ -132,14 +137,34 @@ class Oracle(OraclePP):
 
         self.waypoints = np.concatenate([waypoints, vs], axis=-1)
 
+        # self.plot_plan(env_map, t_pts, ws, waypoints)
+
         self.reset_lap()
 
         return waypoints
 
+    def plot_plan(self, env_map, t_pts, ws, waypoints=None):
+        env_map.render_map(4)
+
+        plt.figure(4)
+        env_map.render_wpts(t_pts)
+        env_map.render_wpts(waypoints)
+        # env_map.render_aim_pts(t_pts)
+
+        rs = t_pts[:, 0] - ws[:, 0]
+        r_pts = np.stack([rs, t_pts[:, 1]], axis=1)
+        xs, ys = env_map.convert_positions(r_pts)
+        plt.plot(xs, ys, 'b')
+
+        ls = t_pts[:, 0] + ws[:, 1]
+        l_pts = np.stack([ls, t_pts[:, 1]], axis=1)
+        xs, ys = env_map.convert_positions(l_pts)
+        plt.plot(xs, ys, 'b')
+
+        plt.show()
+
     def plan_act(self, obs):
-        pos = np.array(obs['state'][0:2])
-        theta = obs['state'][2]
-        return self.act_pp(pos, theta)
+        return self.act_pp(obs)
         
 
 

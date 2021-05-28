@@ -1,51 +1,26 @@
 
-from numba.core.decorators import njit
-import numpy as np
+
+from ReferenceModification.NavAgents.AgentNav import NavTestVehicle
+from ReferenceModification.NavAgents.AgentMod import ModVehicleTest 
+from ReferenceModification.NavAgents.Oracle import Oracle
+from ReferenceModification.NavAgents.FollowTheGap import ForestFGM
+
+from toy_f110 import ForestSim
+
+import numpy as np 
 import csv
-from matplotlib import pyplot as plt
 
 
-import ReferenceModification.LibFunctions as lib
+map_name = "forest2"
+n = 1
+nav_name = f"Navforest_{n}"
+mod_name = f"ModForest_{n}"
+repeat_name = f"RepeatTest_{n}"
+eval_name = f"CompareTest_{n}"
+
+n_test = 5
 
 
-
-"""General test function"""
-def test_single_vehicle(env, vehicle, show=False, laps=100, add_obs=True, wait=False):
-    crashes = 0
-    completes = 0
-    lap_times = [] 
-    curves = []
-
-    state = env.reset(add_obs)
-    done, score = False, 0.0
-    for i in range(laps):
-        try:
-            vehicle.plan_forest(env.env_map)
-        except AttributeError as e:
-            pass
-        while not done:
-            a = vehicle.plan_act(state)
-            s_p, r, done, _ = env.step(a)
-            state = s_p
-            # env.render(False)
-        if show:
-            env.render(wait=wait, name=vehicle.name)
-
-        if r == -1:
-            crashes += 1
-            print(f"({i}) Crashed -> time: {env.steps} ")
-        else:
-            completes += 1
-            print(f"({i}) Complete -> time: {env.steps}")
-
-            lap_times.append(env.steps)
-
-        state = env.reset(add_obs)
-        done = False
-
-    print(f"Crashes: {crashes}")
-    print(f"Completes: {completes} --> {(completes / (completes + crashes) * 100):.2f} %")
-    print(f"Lap times Avg: {np.mean(lap_times)} --> Std: {np.std(lap_times)}")
 
 
 """Testing Function"""
@@ -120,19 +95,6 @@ class TestData:
             csvwriter = csv.writer(csvfile)
             csvwriter.writerows(data)
 
-    # def load_csv_data(self, eval_name):
-    #     file_name = 'Vehicles/Evals' + eval_name + '.csv'
-
-    #     with open(file_name, 'r') as csvfile:
-    #         csvFile = csv.reader(csvfile, quoting=csv.QUOTE_NONNUMERIC)  
-            
-    #         for lines in csvFile:  
-    #             self.
-    #             rewards.append(lines)
-
-
-    # def plot_eval(self):
-    #     pass
 
 
 class TestVehicles(TestData):
@@ -192,7 +154,7 @@ class TestVehicles(TestData):
         done = False
         while not done:
             a = vehicle.plan_act(state)
-            s_p, r, done, _ = env.step(a)
+            s_p, r, done, _ = env.step_plan(a)
             state = s_p
             # env.render(False)
 
@@ -209,5 +171,45 @@ class TestVehicles(TestData):
 
 
 
+def big_test():
+    env = ForestSim(map_name)
+    test = TestVehicles(env.sim_conf, eval_name)
+
+    vehicle = NavTestVehicle(nav_name, env.sim_conf)
+    test.add_vehicle(vehicle)
+
+    vehicle = ForestFGM()
+    test.add_vehicle(vehicle)
+
+    vehicle = Oracle(env.sim_conf)
+    test.add_vehicle(vehicle)
+
+    vehicle = ModVehicleTest(mod_name, map_name, env.sim_conf)
+    test.add_vehicle(vehicle)
+
+    # test.run_eval(env, 1, True)
+    test.run_eval(env, n_test, False, wait=False)
+
+
+
+def test_repeat():
+    env = ForestSim(map_name)
+    test = TestVehicles(env.sim_conf, repeat_name)
+
+    for i in range(10):
+        train_name = f"ModRepeat_forest_{i}"
+        vehicle = ModVehicleTest(train_name, map_name, env.sim_conf)
+        test.add_vehicle(vehicle)
+
+    # test.run_eval(env, 1000, False)
+    test.run_eval(env, n_test, False)
+
+
+
 if __name__ == "__main__":
-    pass
+    
+
+    test_repeat()
+
+    big_test()
+

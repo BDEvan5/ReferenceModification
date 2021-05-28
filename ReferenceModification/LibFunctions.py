@@ -5,8 +5,9 @@ import cmath
 import yaml
 from argparse import Namespace
 
-def load_conf(fname):
-    with open('config/' + fname + '.yaml') as file:
+def load_conf(path, fname):
+    full_path = path + '/config/' + fname + '.yaml'
+    with open(full_path) as file:
         conf_dict = yaml.load(file, Loader=yaml.FullLoader)
 
     conf = Namespace(**conf_dict)
@@ -20,7 +21,7 @@ def add_locations(x1=[0, 0], x2=[0, 0], dx=1):
     ret = [0.0, 0.0]
     for i in range(2):
         ret[i] = x1[i] + x2[i] * dx
-    return ret
+    return np.array(ret)
 
 
 def get_distance(x1=[0, 0], x2=[0, 0]):
@@ -137,6 +138,15 @@ def sub_angles_complex(a1, a2):
 
     return phase
     
+# def sub_angles_complex(a1, a2):
+#     c1 = complex(math.cos(a1), math.sin(a1))
+#     c2 = complex(math.cos(a2), math.sin(a2))
+
+#     sum_c = c1 * c2.conjugate()
+#     phase = cmath.phase(sum_c)
+
+#     return phase
+
 def limit_multi_theta(thetas):
     ths = []
     for theta in thetas:
@@ -164,7 +174,7 @@ def plot_no_avg(values, moving_avg_period=10, title="Results", figure_n=2):
     plt.clf()        
     plt.title(title)
     plt.xlabel('Episode')
-    plt.ylabel('Reward')
+    plt.ylabel('Duration')
     plt.plot(values)
 
     plt.pause(0.0001)

@@ -1,3 +1,4 @@
+from os import stat
 import numpy as np 
 from matplotlib import pyplot as plt
 import random
@@ -53,6 +54,7 @@ class ReplayBufferTD3(object):
         return len(self.storage)
 
 
+
 class SmartBufferTD3(object):
     def __init__(self, max_size=1000000, state_dim=14):     
         self.max_size = max_size
@@ -95,6 +97,7 @@ class SmartBufferTD3(object):
 
     def size(self):
         return self.ptr
+
 
 nn_l1 = 400
 nn_l2 = 300
@@ -166,7 +169,7 @@ class TD3(object):
         self.critic_optimizer = None
 
         # self.replay_buffer = ReplayBufferTD3()
-        self.replay_buffer = SmartBufferTD3(state_dim = state_dim)
+        self.replay_buffer = SmartBufferTD3(state_dim=state_dim)
 
     def create_agent(self, h_size):
         state_dim = self.state_dim

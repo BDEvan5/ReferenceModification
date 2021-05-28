@@ -10,15 +10,15 @@ Avg lap times: 0.0
 No Obs Time: 109.0
 -----------------------------------------------------
 Vehicle: ModRepeat_forest_1
-Crashes: 4.0 --> Completes 1.0
-% Finished = 20.00
-Avg lap times: 689.0
+Crashes: 3.0 --> Completes 2.0
+% Finished = 40.00
+Avg lap times: 824.5
 No Obs Time: 419.0
 -----------------------------------------------------
 Vehicle: ModRepeat_forest_2
-Crashes: 5.0 --> Completes 0.0
-% Finished = 0.00
-Avg lap times: 0.0
+Crashes: 4.0 --> Completes 1.0
+% Finished = 20.00
+Avg lap times: 559.0
 No Obs Time: 379.0
 -----------------------------------------------------
 Vehicle: ModRepeat_forest_3
@@ -28,38 +28,38 @@ Avg lap times: 0.0
 No Obs Time: 160.0
 -----------------------------------------------------
 Vehicle: ModRepeat_forest_4
-Crashes: 4.0 --> Completes 1.0
-% Finished = 20.00
-Avg lap times: 567.0
+Crashes: 3.0 --> Completes 2.0
+% Finished = 40.00
+Avg lap times: 563.0
 No Obs Time: 410.0
 -----------------------------------------------------
 Vehicle: ModRepeat_forest_5
-Crashes: 3.0 --> Completes 2.0
-% Finished = 40.00
-Avg lap times: 424.0
+Crashes: 2.0 --> Completes 3.0
+% Finished = 60.00
+Avg lap times: 404.3333333333333
 No Obs Time: 375.0
 -----------------------------------------------------
 Vehicle: ModRepeat_forest_6
 Crashes: 3.0 --> Completes 2.0
 % Finished = 40.00
-Avg lap times: 978.0
+Avg lap times: 823.5
 No Obs Time: 592.0
 -----------------------------------------------------
 Vehicle: ModRepeat_forest_7
-Crashes: 4.0 --> Completes 1.0
-% Finished = 20.00
-Avg lap times: 614.0
+Crashes: 3.0 --> Completes 2.0
+% Finished = 40.00
+Avg lap times: 566.5
 No Obs Time: 500.0
 -----------------------------------------------------
 Vehicle: ModRepeat_forest_8
-Crashes: 3.0 --> Completes 2.0
-% Finished = 40.00
-Avg lap times: 794.0
+Crashes: 5.0 --> Completes 0.0
+% Finished = 0.00
+Avg lap times: 0.0
 No Obs Time: 492.0
 -----------------------------------------------------
 Vehicle: ModRepeat_forest_9
-Crashes: 4.0 --> Completes 1.0
-% Finished = 20.00
-Avg lap times: 815.0
+Crashes: 5.0 --> Completes 0.0
+% Finished = 0.00
+Avg lap times: 0.0
 No Obs Time: 809.0
 -----------------------------------------------------

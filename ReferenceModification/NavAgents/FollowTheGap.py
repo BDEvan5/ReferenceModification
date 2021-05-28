@@ -1,8 +1,7 @@
 import numpy as np 
 from numba import njit
  
-from ReferenceModification.PlannerUtils.speed_utils import calculate_speed
-import ReferenceModification.LibFunctions as lib
+from ReferenceModification.NavUtils.speed_utils import calculate_speed
 
 
 #TODO: most of this can be njitted
@@ -26,12 +25,14 @@ class ForestFGM:
         proc_ranges = np.convolve(proc_ranges, np.ones(self.PREPROCESS_CONV_SIZE), 'same') / self.PREPROCESS_CONV_SIZE
 
         return proc_ranges
-
+   
     def find_best_point(self, start_i, end_i, ranges):
         """Start_i & end_i are start and end indices of max-gap range, respectively
         Return index of best point in ranges
 	    Naive: Choose the furthest point within ranges and go there
         """
+        # do a sliding window average over the data in the max gap, this will
+        # help the car to avoid hitting corners
         averaged_max_gap = np.convolve(ranges[start_i:end_i], np.ones(self.BEST_POINT_CONV_SIZE), 'same') 
         averaged_max_gap = averaged_max_gap / self.BEST_POINT_CONV_SIZE
         best = averaged_max_gap.argmax()
@@ -59,16 +60,18 @@ class ForestFGM:
         best = self.find_best_point(gap_start, gap_end, proc_ranges)
 
         steering_angle = self.get_angle(best, len(proc_ranges))
+        # self.vis.add_step(proc_ranges, steering_angle)
 
         return steering_angle
 
     def plan_act(self, obs):
-        scan = obs['scan']
+        scan = obs[7:-1]
         ranges = np.array(scan, dtype=np.float)
 
         steering_angle = self.process_lidar(ranges)
         steering_angle = steering_angle * np.pi / 180
 
+        # speed = 4
         speed = calculate_speed(steering_angle)
 
         action = np.array([steering_angle, speed])
@@ -83,12 +86,16 @@ def find_max_gap(free_space_ranges):
     """ Return the start index & end index of the max gap in free_space_ranges
         free_space_ranges: list of LiDAR data which contains a 'bubble' of zeros
     """
+    # mask the bubble
     masked = np.ma.masked_where(free_space_ranges==0, free_space_ranges)
+    # get a slice for each contigous sequence of non-bubble data
     slices = np.ma.notmasked_contiguous(masked)
     if len(slices) == 0:
         return 0, len(free_space_ranges)
     max_len = slices[0].stop - slices[0].start
     chosen_slice = slices[0]
+    # I think we will only ever have a maximum of 2 slices but will handle an
+    # indefinitely sized list for portablility
     for sl in slices[1:]:
         sl_len = sl.stop - sl.start
         if sl_len > max_len:
