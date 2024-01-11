@@ -41,10 +41,12 @@ The path follower, follows a reference and the RL agent learns to modify the ref
 ## Citing
 If you have found our work helpful, please cite as:
 ```latex
-@article{evans2021autonomous,
-  title={Autonomous Obstacle Avoidance by Learning Policies for Reference Modification},
-  author={Evans, Benjamin and Jordaan, Hendrik W and Engelbrecht, Herman A},
-  journal={arXiv preprint arXiv:2102.11042},
-  year={2021}
+@inproceedings{evans2021learning,
+  title={Learning the subsystem of local planning for autonomous racing},
+  author={Evans, Benjamin and Engelbrecht, Herman A and Jordaan, Hendrik W},
+  booktitle={2021 20th International Conference on Advanced Robotics (ICAR)},
+  pages={601--606},
+  year={2021},
+  organization={IEEE}
 }
 ```
